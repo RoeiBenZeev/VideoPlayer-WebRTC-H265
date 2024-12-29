@@ -1,16 +1,57 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import VideoControls from './VideoControls';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 
 interface VideoPlayerProps {
   src?: string;
+  serverIp: string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, serverIp }) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [isMuted, setIsMuted] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const pc = new RTCPeerConnection();
+
+    pc.ontrack = (event) => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = event.streams[0];
+      }
+    };
+
+    const start = async () => {
+      const response = await fetch(`http://${serverIp}:8000/offer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const offer = await response.json();
+      await pc.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      await fetch(`http://${serverIp}:8000/answer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sdp: pc.localDescription.sdp,
+          type: pc.localDescription.type,
+          pc_id: offer.pc_id
+        })
+      });
+    };
+
+    start();
+
+    return () => {
+      pc.close();
+    };
+  }, [serverIp]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -30,22 +71,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
     }
   };
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setProgress(progress);
-    }
-  };
-
   return (
-    <div className="relative w-full max-w-4xl mx-auto bg-black rounded-lg overflow-hidden">
-      <video
-        ref={videoRef}
-        className="w-full"
-        onTimeUpdate={handleTimeUpdate}
-        src={src || "http://localhost:8000/video"}
-        controls
-      />
+    <div>
+      <video ref={videoRef} autoPlay playsInline />
       <VideoControls
         isPlaying={isPlaying}
         isMuted={isMuted}
