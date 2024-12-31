@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4">
       <h1 className="text-3xl font-bold text-white mb-8">Video Player</h1>
-      <VideoPlayer />
+      <VideoPlayer serverIp="127.0.0.1"/>
     </div>
   );
 }

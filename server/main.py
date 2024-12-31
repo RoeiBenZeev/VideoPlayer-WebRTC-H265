@@ -42,9 +42,9 @@ async def offer():
     video_track = VideoStreamTrackFromURL(VIDEO_URL)
     pc.addTrack(video_track)
 
-    @pc.on("icecandidate")
-    async def on_icecandidate(candidate):
-        await websocket.send(json.dumps({"candidate": candidate}))
+    # @pc.on("icecandidate")
+    # async def on_icecandidate(candidate):
+    #     await websocket.send(json.dumps({"candidate": candidate}))
 
     offer = await pc.createOffer()
     await pc.setLocalDescription(offer)

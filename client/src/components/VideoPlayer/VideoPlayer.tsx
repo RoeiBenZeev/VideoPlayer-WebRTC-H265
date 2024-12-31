@@ -14,41 +14,58 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, serverIp }) => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const pc = new RTCPeerConnection();
+    const configuration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
 
+    const pc = new RTCPeerConnection();
+    const dataChannel = pc.createDataChannel("dummy"); // Add a dummy data channel
+        
     pc.ontrack = (event) => {
+      debugger;
       if (videoRef.current) {
         videoRef.current.srcObject = event.streams[0];
       }
     };
 
+    pc.onicecandidate = event => {
+      console.log("ICE Candidate:", event.candidate);
+      if (event.candidate) {
+          console.log("New ICE candidate:", event.candidate);
+          // Here you would typically send the ICE candidate to the other peer
+      } else {
+          console.log("ICE gathering finished.");
+      }
+    };
+
+    pc.oniceconnectionstatechange = () => {
+      console.log("ICE Connection State:", pc.iceConnectionState);
+    };
+
     const start = async () => {
-      const response = await fetch(`http://${serverIp}:8000/offer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const offer = await response.json();
-      await pc.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      await fetch(`http://${serverIp}:8000/answer`, {
+      
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      
+      debugger;
+      const response = await fetch(`http://${serverIp}:1984/api/webrtc?src=webcam`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          sdp: pc.localDescription.sdp,
           type: pc.localDescription.type,
-          pc_id: offer.pc_id
+          sdp: pc.localDescription.sdp
+          ,
         })
       });
+      debugger;
+      const answer = await response.json();
+      await pc.setRemoteDescription(new RTCSessionDescription(answer));
     };
 
     start();
 
     return () => {
+      // Cleanup code if necessary
       pc.close();
     };
   }, [serverIp]);

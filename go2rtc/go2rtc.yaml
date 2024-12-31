@@ -1,0 +1,16 @@
+api:
+  listen: ":1984" # Default HTTP port for go2rtc
+  username: "admin"  # default "", Basic auth for WebUI
+  password: "pass"   # default "", Basic auth for WebUI
+  origin: "*"
+webrtc:
+  listen: ":8555/tcp"
+  candidates:
+    - stun:8555  # if you have dynamic public IP-address
+  ice_servers:
+    - urls: []
+streams:
+  webcam: ffmpeg:rtsp://127.0.0.1:8558/webcam#video=h264
+log:
+  api: trace
+  webrtc: trace
