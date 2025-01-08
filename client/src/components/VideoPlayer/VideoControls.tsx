@@ -4,7 +4,8 @@ import { LucideIcon } from 'lucide-react';
 interface VideoControlsProps {
   isPlaying: boolean;
   isMuted: boolean;
-  progress: number;
+  isLive: boolean;
+  currentTime: number;
   onPlayPause: () => void;
   onMute: () => void;
   PlayIcon: LucideIcon;
@@ -16,7 +17,8 @@ interface VideoControlsProps {
 const VideoControls: React.FC<VideoControlsProps> = ({
   isPlaying,
   isMuted,
-  progress,
+  isLive,
+  currentTime,
   onPlayPause,
   onMute,
   PlayIcon,
@@ -24,37 +26,39 @@ const VideoControls: React.FC<VideoControlsProps> = ({
   VolumeIcon,
   MuteIcon,
 }) => {
+  const formatTime = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-      <div className="w-full bg-gray-200 h-1 rounded-full mb-4">
-        <div
-          className="bg-blue-500 h-1 rounded-full transition-all duration-300"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-      
-      <div className="flex items-center justify-between text-white">
-        <button
-          onClick={onPlayPause}
-          className="p-2 hover:bg-white/20 rounded-full transition-colors"
-        >
-          {isPlaying ? (
-            <PauseIcon className="w-6 h-6" />
-          ) : (
-            <PlayIcon className="w-6 h-6" />
-          )}
-        </button>
-        
-        <button
-          onClick={onMute}
-          className="p-2 hover:bg-white/20 rounded-full transition-colors"
-        >
-          {isMuted ? (
-            <MuteIcon className="w-6 h-6" />
-          ) : (
-            <VolumeIcon className="w-6 h-6" />
-          )}
-        </button>
+    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <button 
+            onClick={onPlayPause}
+            className="p-1 hover:bg-white hover:bg-opacity-20 rounded"
+          >
+            {isPlaying ? <PauseIcon className="w-6 h-6 text-white" /> : <PlayIcon className="w-6 h-6 text-white" />}
+          </button>
+          
+          <button 
+            onClick={onMute}
+            className="p-1 hover:bg-white hover:bg-opacity-20 rounded"
+          >
+            {isMuted ? <MuteIcon className="w-6 h-6 text-white" /> : <VolumeIcon className="w-6 h-6 text-white" />}
+          </button>
+          
+          <span className="text-white text-sm">
+            {formatTime(currentTime)}
+          </span>
+        </div>
       </div>
     </div>
   );

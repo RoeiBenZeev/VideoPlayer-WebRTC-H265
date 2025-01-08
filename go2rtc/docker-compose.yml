@@ -7,4 +7,4 @@ services:
     environment:
       - TZ=Atlantic/Bermuda  # timezone in logs
     volumes:
-      - ~/repos/video-h265/go2rtc:/config   # folder for go2rtc.yaml file (edit from WebUI)
+      - ~/Documents/h265-testing/VideoPlayer-WebRTC-H265/go2rtc:/config   # folder for go2rtc.yaml file (edit from WebUI)

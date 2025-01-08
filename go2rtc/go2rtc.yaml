@@ -4,13 +4,26 @@ api:
   password: "pass"   # default "", Basic auth for WebUI
   origin: "*"
 webrtc:
-  listen: ":8555/tcp"
+  enabled: true
+  listen: ":8555"
   candidates:
-    - stun:8555  # if you have dynamic public IP-address
+    - stun:stun.l.google.com:19302
   ice_servers:
-    - urls: []
-streams:
-  webcam: ffmpeg:rtsp://127.0.0.1:8558/webcam#video=h264
+    - urls: [ "stun:stun.l.google.com:19302" ]
+  options:
+    videoCodec: h265
+    audioCodec: opus
+streams: 
+  yese: ffmpeg:rtsp://127.0.0.1:8558/yese#video=h264#hardware
+  nose: ffmpeg:rtsp://127.0.0.1:8558/yese#video=h264
+  rawStream:
+      input: ffmpeg:rtsp://127.0.0.1:8558/yese
+      raw: raw1?video=rawvideo&format=yuv420p
+ffmpeg:
+  hwaccel: true    # Enable hardware decoding for H265
+  # cuda: true       # If using NVIDIA GPU
+  vaapi: true    # If using Intel GPU
+  # amf: true      # If using AMD GPU
 log:
   api: trace
   webrtc: trace
