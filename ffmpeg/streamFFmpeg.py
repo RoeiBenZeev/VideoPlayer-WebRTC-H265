@@ -6,13 +6,14 @@ gi.require_version('GstRtspServer', '1.0')
 from gi.repository import Gst, GstRtspServer, GLib
 import subprocess
 
-options = "hc:d:"
-long_options= ["codec", "device"]
+options = "hc:i:a:"
+long_options= ["codec", "input", "address"]
 
 class WebcamFFmpegStreamCommand:
     def __init__(self):
         self.codec =  "libx265"
         self.device =  "/dev/video0"
+        self.rtsp_url = "rtsp://127.0.0.1:8558/yese"
         # Parsing argument
         arguments, values = getopt.getopt(sys.argv[1:], options, long_options)
 
@@ -24,18 +25,22 @@ class WebcamFFmpegStreamCommand:
                 print(f"Setting codec {currentValue}")
                 self.codec =  currentValue if currentValue else self.codec
                 
-            elif currentArgument in ("-d", "--device"):
+            elif currentArgument in ("-i", "--input"):
                 print(f"Setting input device {currentValue}")
-                self.device =  currentValue if currentValue else self.device
+                self.input =  currentValue if currentValue else self.input
+
+            elif currentArgument in ("-a", "--address"):
+                print(f"Setting input device {currentValue}")
+                self.rtsp_url =  currentValue if currentValue else self.rtsp_url
 
         
-        self.rtsp_url = "rtsp://127.0.0.1:8558/yese"
 
         self.ffmpeg_command = [
             "ffmpeg",
             "-f", "v4l2",                # Input format
-            "-i", self.device ,         # Input device
-            "-c:v", self.codec ,           # Video codec
+            "-stream_loop", "-1",        # Loops video
+            "-i", self.input ,           # Input device
+            "-c:v", self.codec ,         # Video codec
             "-preset", "superfast",      # Encoding speed
             "-tune", "zerolatency",      # Tune for low latency
             "-b:v", "512k",              # Bitrate

@@ -14,16 +14,15 @@ webrtc:
     videoCodec: h265
     audioCodec: opus
 streams: 
-  yese: ffmpeg:rtsp://127.0.0.1:8558/yese#video=h264#hardware
+  yese: ffmpeg:rtsp://127.0.0.1:8558/yese#video=h264#hardware=vaapi
   nose: ffmpeg:rtsp://127.0.0.1:8558/yese#video=h264
-  rawStream:
-      input: ffmpeg:rtsp://127.0.0.1:8558/yese
-      raw: raw1?video=rawvideo&format=yuv420p
+  shese: ffmpeg:rtsp://127.0.0.1:8558/shese#video=h264#hardware=vaapi
+  #rawStream: ffmpeg:rtsp://127.0.0.1:8558/yese#video=raw
 ffmpeg:
   hwaccel: true    # Enable hardware decoding for H265
-  # cuda: true       # If using NVIDIA GPU
+  cuda: true       # If using NVIDIA GPU
   vaapi: true    # If using Intel GPU
-  # amf: true      # If using AMD GPU
+  amf: true      # If using AMD GPU
 log:
   api: trace
-  webrtc: trace
+  webrtc: traces

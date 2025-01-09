@@ -8,12 +8,9 @@ function App() {
       <h1 className="text-3xl font-bold text-white mb-8">Video Player</h1>
       <div className='relative flex gap-5'>
    {/* <VideoPlayer serverIp="127.0.0.1"/> */}
-      {/* <WebRTCPlayer streamUrl='http://localhost:1984/api/webrtc?dst=yese'/> */}
-      {/* <WebRTCVideo url='http://localhost:1984/api/webrtc?dst=yese'/> */}
-      {/* <WebRTCClient/> */}
       <NewVideoPlayer src='yese'/>
       <NewVideoPlayer src='nose'/>
-
+      <NewVideoPlayer src='shese'/>
       </div>
     </div>
   );
