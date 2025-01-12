@@ -45,6 +45,7 @@ class WebcamFFmpegStreamCommand:
             "-tune", "zerolatency",      # Tune for low latency
             "-b:v", "512k",              # Bitrate
             "-f", "rtsp",                # Output format
+            '-vf', 'scale=1920:1080',      # Resolution
             self.rtsp_url                # Output URL
         ]
 

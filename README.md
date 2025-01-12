@@ -18,7 +18,7 @@ There should be multiple methods to achieve the P.O.C, for example:
 
 A ready to use rtsp server that reads the ffmpeg rtsp stream and publishes it to go2rtc
 
-Turn on by running rtsp-simple-server executable
+Turn on by running rtsp-simple-server executable![alt text](image.png)
 
 #### 2. Stream FFmpeg
 
@@ -28,16 +28,13 @@ Run it like so: ```python3 streamFFmpeg.py```
 
 You can change some of its variables using the system arguments:
 
-| Field            | Short | Long      |
-| ---------------- |:-----:| ---------:|
-| Codec            | -c    | --codec   |
-| Input Device     | -i    | --input   |
-| RTSP URL Address | -a    | --Address |
+| Field            | Short | Long      | Default                      |
+| ---------------- |:-----:| ---------:| ----------------------------:|
+| Codec            | -c    | --codec   | "libx265"                    |
+| Input Device     | -i    | --input   | "/dev/video0"                |
+| RTSP URL Address | -a    | --Address | "rtsp://127.0.0.1:8558/yese" |
 
 example: ````python3 streamFFmpeg.py -c "libx265" -i "/dev/video2" -a "input.mp4"````
-
-Codec defaults to "libx265", which is h265
-Input device defaults to "/dev/video0" which is the first camera detected
 
 #### 3. go2rtc
 

@@ -9,8 +9,8 @@ function App() {
       <div className='relative flex gap-5'>
    {/* <VideoPlayer serverIp="127.0.0.1"/> */}
       <NewVideoPlayer src='yese'/>
-      <NewVideoPlayer src='nose'/>
-      <NewVideoPlayer src='shese'/>
+      {/* <NewVideoPlayer src='input'/> */}
+      {/* <NewVideoPlayer src='input2'/> */}
       </div>
     </div>
   );

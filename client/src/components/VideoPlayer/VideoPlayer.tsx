@@ -31,6 +31,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, serverIp = "127.0.0.1" }
       console.log("ICE Candidate:", candidate);
       if (candidate) {
           console.log("New ICE candidate:", candidate);
+          fetch(`http://${serverIp}:1984/api/candidates`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(candidate),
+          });
           // Here you would typically send the ICE candidate to the other peer
       } else {
           console.log("ICE gathering finished.");
